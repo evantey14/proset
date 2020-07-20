@@ -1,0 +1,55 @@
+.card {
+  --card-width: 150px;
+  --card-height: 225px;
+
+  position: relative; 
+  width: var(--card-width);
+  height: var(--card-height);
+  background: WhiteSmoke;
+  margin: 25px;
+}
+
+.dot {
+  --dot-diameter: 25px;
+  border-radius: 50%;
+  width: var(--dot-diameter);
+  height: var(--dot-diameter);
+  position: absolute;
+}
+
+.red {
+  background: Crimson;
+  top: calc(var(--card-height) / 4 - var(--dot-diameter) / 2);
+  left: calc(var(--card-width) / 3 - var(--dot-diameter) / 2);
+}
+
+.orange {
+  background: orange;
+  left: 25px;
+  top: calc(var(--card-height) / 4 - var(--dot-diameter) / 2);
+  left: calc(var(--card-width) * 2 / 3 - var(--dot-diameter) / 2);
+}
+
+.yellow {
+  background: yellow;
+  top: calc(var(--card-height) * 2 / 4 - var(--dot-diameter) / 2);
+  left: calc(var(--card-width) / 3 - var(--dot-diameter) / 2);
+}
+
+.green {
+  background: green;
+  top: calc(var(--card-height) * 2 / 4 - var(--dot-diameter) / 2);
+  left: calc(var(--card-width) * 2 / 3 - var(--dot-diameter) / 2);
+}
+
+.blue {
+  background: blue;
+  top: calc(var(--card-height) * 3 / 4 - var(--dot-diameter) / 2);
+  left: calc(var(--card-width) / 3 - var(--dot-diameter) / 2);
+}
+
+.violet {
+  background: violet;
+  top: calc(var(--card-height) * 3 / 4 - var(--dot-diameter) / 2);
+  left: calc(var(--card-width) * 2 / 3 - var(--dot-diameter) / 2);
+}

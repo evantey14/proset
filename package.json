@@ -1,8 +1,0 @@
-{
-  "name": "proset",
-  "version": "1.0.0",
-  "main": "index.js",
-  "repository": "https://github.com/evantey14/proset.git",
-  "author": "Evan Tey <evantey14@gmail.com>",
-  "license": "MIT"
-}

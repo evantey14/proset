@@ -1,0 +1,30 @@
+version: "3"
+services:                      
+  server:
+    build: ./backend
+    command: yarn start
+    ports:
+    - "4000:4000"            
+    depends_on:                
+    - db
+    volumes:
+    - ./backend:/backend
+    - /backend/node_modules # don't override the node_module folder
+  client:
+    stdin_open: true # https://github.com/facebook/create-react-app/issues/8688
+    build: ./frontend
+    command: yarn start
+    ports:
+    - "3000:3000"
+    volumes:
+    - ./frontend:/frontend
+    - /frontend/node_modules # don't override the node_module folder
+  db:
+    image: mongo:latest
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+    - "27017:27017"
+
