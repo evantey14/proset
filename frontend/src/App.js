@@ -5,24 +5,25 @@ import './App.css';
 const ENDPOINT = 'http://127.0.0.1:4000';
 
 function App() {
-
   const [cards, setCards] = useState([]);
 
   useEffect(() => {
     const socket = socketIOClient(ENDPOINT);
-    socket.on("initialize", data => {
-      console.log(data);
-      setCards(data.cards);
-    });
-
+    socket.on("initialize", data => setCards(data.cards));
     return () => socket.disconnect();
   }, []);
 
+  const numbers = ["one", "two", "three", "four", "five", "six", "seven"];
+
+
+  function handleClick() {
+    console.log("ahh");
+  }
   return (
-    <div className="App">
+    <div className="table">
       {cards.map((card, index) => {
         return (
-          <Card key={index} number={card} />
+          <Card key={index} value={card} number={numbers[index]} handleClick={handleClick}/>
         )
       })}
     </div>
@@ -30,13 +31,13 @@ function App() {
 }
 
 function Card(props) {
-  const hasDots = props.number.toString(2).padStart(6, '0').split('').map(s => s === "1");
-  const colors = ["red", "orange", "yellow", "green", "blue", "violet"];
+  const hasDots = props.value.toString(2).padStart(6, '0').split('').map(s => s === "1");
+  const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
   return (
-    <div class="card"> { 
+    <div className="card" style={{gridArea: props.number}} onClick={props.handleClick}> {
       hasDots.map((hasDot, index) => {
         if (hasDot) {
-          return <Dot color={colors[index]} />;
+          return <Dot key={index} color={colors[index]} />;
         }
       })
     } </div>
@@ -44,6 +45,6 @@ function Card(props) {
 }
 
 function Dot(props) {
-  return <div class={`dot ${props.color}`}></div>
+  return <div className={`dot ${props.color}`}></div>
 }
 export default App;
