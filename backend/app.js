@@ -30,10 +30,11 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-Game.deleteMany({}, (e) => console.log(e)); 
+// Initialize a single game (this should be changed to allow for game creation / tracking)
+Game.deleteMany({}, (e) => console.log(e));
 const shuffle = cards => cards.sort(() => Math.random() - 0.5);
-let deck = shuffle([...Array(64).keys()]);
-const table = deck.splice(0, 7); 
+let deck = shuffle([...Array(64).keys()].filter(c => c !== 0));
+const table = deck.splice(0, 7);
 game = Game.create({deck: deck, table: table});
 
 module.exports = app;
