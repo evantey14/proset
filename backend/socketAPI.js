@@ -11,13 +11,13 @@ io.on('connection', async (socket) => {
   let game = await Game.findOne({}); // For now, there's just one game
   socket.emit('initialize', {cards: game.table});
 
-  socket.on('guess', cards => {
+  socket.on('guess', async (cards) => {
     if (isASet(cards)) {
       game.replaceCards(cards);
-      console.log(cards);
-      console.log(game.deck);
-      if (game.table.length === 0) { // doesn't work yet -- fix
-        game = Game.createNewGame();
+      console.log(`Set: ${cards}`);
+      console.log(`Table: ${game.table} Remaining: ${game.deck}`);
+      if (game.isOver()) {
+        game = await Game.createNewGame();
       }
       io.emit('initialize', {cards: game.table}); // TODO this should be fixed
     }

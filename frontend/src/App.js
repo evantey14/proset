@@ -20,6 +20,11 @@ function App() {
     return () => socket.disconnect();
   }, []);
 
+  useEffect(() => {
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [cards, selectedCards]);
+
   function handleClick(card) {
     let newSelectedCards;
     if (selectedCards.includes(card)) {
@@ -33,20 +38,43 @@ function App() {
     setSelectedCards(newSelectedCards);
   }
 
+  function handleKey({ key }) {
+    if (cards[key - 1]) {
+      handleClick(cards[key - 1]);
+    }
+  }
+
+  function solve() {
+    for (let i = 1; i <127; i++) {
+      const includeCards = i.toString(2).padStart(7, '0').split('').map(s => s === "1");
+      let guess = cards.filter((c, index) => includeCards[index]);
+      if (!guess.includes(0) && guess.reduce((acc, cur) => acc^cur) === 0) {
+        const solution = locations.reduce((a, l, i) => includeCards[i] ? a + " " + l : a, "");
+        console.log(solution);
+        break;
+      }
+    }
+  }
+
   return (
+    <React.Fragment>
     <div className="table">
       {cards.map((card, index) => {
-        return (
-          <Card
-            key={card /* This makes React re-animate when card is replaced. */}
-            value={card}
-            location={locations[index]}
-            selected={selectedCards.includes(card)}
-            handleClick={() => handleClick(card)}
-          />
-        )
+        if (card !== 0) {
+          return (
+            <Card
+              key={card /* This makes React re-animate when card is replaced. */}
+              value={card}
+              location={locations[index]}
+              selected={selectedCards.includes(card)}
+              handleClick={() => handleClick(card)}
+            />
+          )
+        }
       })}
     </div>
+    <button onClick={solve}>Solve</button>
+    </React.Fragment>
   );
 }
 

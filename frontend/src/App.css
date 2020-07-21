@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: 1fr;
   place-items: center;
-  padding: 100px;
+  padding: 50px;
 }
 
 .table {
@@ -15,8 +15,8 @@
     "three three four four five five"
     ". six six seven seven .";
   place-items: center;
-  width: 500px;
-  height: 500px;
+  width: 600px;
+  height: 600px;
 }
 
 .card {
