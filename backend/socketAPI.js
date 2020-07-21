@@ -14,6 +14,11 @@ io.on('connection', async (socket) => {
   socket.on('guess', cards => {
     if (isASet(cards)) {
       game.replaceCards(cards);
+      console.log(cards);
+      console.log(game.deck);
+      if (game.table.length === 0) { // doesn't work yet -- fix
+        game = Game.createNewGame();
+      }
       io.emit('initialize', {cards: game.table}); // TODO this should be fixed
     }
   });
