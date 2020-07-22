@@ -33,11 +33,21 @@
 }
 
 @keyframes pullOut {
-  0% { transform: scaleY(0.1); }
-  40% { transform: scaleY(1.02); }
-  60% { transform: scaleY(0.99); }
-  80% { transform: scaleY(1.01); }
-  100% { transform: scaleY(1); }
+  0% {
+    transform: scaleY(0.1);
+  }
+  40% {
+    transform: scaleY(1.02);
+  }
+  60% {
+    transform: scaleY(0.99);
+  }
+  80% {
+    transform: scaleY(1.01);
+  }
+  100% {
+    transform: scaleY(1);
+  }
 }
 
 .selected {
@@ -61,7 +71,7 @@
 }
 
 .yellow {
-  background: #FDEC96;
+  background: #fdec96;
   grid-area: 2 / 1;
 }
 
