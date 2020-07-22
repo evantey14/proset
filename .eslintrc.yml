@@ -5,6 +5,7 @@ env:
 extends:
   - 'plugin:react/recommended'
   - standard
+  - prettier
 parserOptions:
   ecmaFeatures:
     jsx: true
