@@ -1,7 +1,8 @@
+const socketIo = require("socket.io");
 const { Game } = require("./models");
-var socketIo = require("socket.io");
-var io = socketIo();
-var socketAPI = {};
+
+const io = socketIo();
+const socketAPI = {};
 
 const isASet = (cards) => cards.reduce((acc, cur) => acc ^ cur) === 0;
 

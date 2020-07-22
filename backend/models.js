@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
-const Schema = mongoose.Schema;
-const ObjectId = Schema.ObjectId;
+const { Schema } = mongoose;
 
 const gameSchema = new Schema({
   deck: [Number],
@@ -10,9 +9,9 @@ const gameSchema = new Schema({
 
 const shuffle = (cards) => cards.sort(() => Math.random() - 0.5);
 gameSchema.statics.createNewGame = function () {
-  let deck = shuffle([...Array(64).keys()].filter((c) => c !== 0));
+  const deck = shuffle([...Array(64).keys()].filter((c) => c !== 0));
   const table = deck.splice(0, 7);
-  return this.create({ deck: deck, table: table });
+  return this.create({ deck, table });
 };
 
 gameSchema.methods.replaceCards = function (cards) {
