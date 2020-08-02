@@ -13,18 +13,20 @@ io.on("connection", async (socket) => {
   const name = `Player ${Math.floor(100 * Math.random())}`;
   await game.addPlayer(name);
   socket.emit("setName", { name: name });
-  io.emit("initialize", { cards: game.table, players: game.players });
+  io.emit("refreshGame", { cards: game.table, players: game.players });
 
   socket.on("guess", async (cards) => {
-    const game = await Game.findOne({});
+    let game = await Game.findOne({});
     if (isASet(cards)) {
       await game.updateGame(name, cards);
-      console.log(`Set: ${cards}`);
-      console.log(`Table: ${game.table} Remaining: ${game.deck}`);
+      console.log(
+        `${name} found a set: ${cards} (${game.deck.length} remaining in the deck.)`
+      );
       if (game.isOver()) {
-        game = await Game.createNewGame();
+        Game.deleteMany({}, (e) => console.log(e));
+        game = await Game.createNewGame(game.players);
       }
-      io.emit("initialize", { cards: game.table, players: game.players }); // TODO this should be fixed
+      io.emit("refreshGame", { cards: game.table, players: game.players }); // TODO this should be fixed
     }
   });
 
@@ -32,7 +34,7 @@ io.on("connection", async (socket) => {
     const game = await Game.findOne({});
     console.log("Client disconnected");
     game.removePlayer(name);
-    io.emit("initialize", { cards: game.table, players: game.players });
+    io.emit("refreshGame", { cards: game.table, players: game.players });
   });
 });
 

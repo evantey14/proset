@@ -15,10 +15,10 @@ const gameSchema = new Schema({
 
 const shuffle = (cards) => cards.sort(() => Math.random() - 0.5);
 
-gameSchema.statics.createNewGame = function () {
+gameSchema.statics.createNewGame = function (players = []) {
   const deck = shuffle([...Array(64).keys()].filter((c) => c !== 0));
   const table = deck.splice(0, 7);
-  return this.create({ deck, table });
+  return this.create({ deck, table, players });
 };
 
 gameSchema.methods.updateGame = function (name, cardsToRemove) {

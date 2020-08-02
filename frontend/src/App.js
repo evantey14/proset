@@ -18,7 +18,7 @@ function App() {
   useEffect(() => {
     const socket = socketIOClient(ENDPOINT);
     setSocket(socket);
-    socket.on("initialize", (data) => {
+    socket.on("refreshGame", (data) => {
       setSelectedCards([]);
       setCards(data.cards);
       setPlayers(data.players.sort((a, b) => (a.name > b.name ? 1 : -1)));
@@ -60,11 +60,8 @@ function App() {
         .map((s) => s === "1");
       let guess = cards.filter((c, index) => includeCards[index]);
       if (!guess.includes(0) && guess.reduce((acc, cur) => acc ^ cur) === 0) {
-        const solution = locations.reduce(
-          (a, l, i) => (includeCards[i] ? a + " " + l : a),
-          ""
-        );
-        console.log(solution);
+        setSelectedCards(guess); // show solution to player
+        setTimeout(() => socket.emit("guess", guess), 3000);
         break;
       }
     }
@@ -75,8 +72,8 @@ function App() {
       <div id="info">
         <h1>Pro Set</h1>
         <p>
-          <u>Goal</u>: Find a set of cards with an even number of each dot
-          color.
+          <u>Goal</u>: Find a set of cards with an even number of each color
+          dot.
         </p>
         <p>
           <a href="https://github.com/evantey14/proset">source</a> |{" "}
