@@ -1,11 +1,11 @@
 #root {
   display: grid;
-  grid-template-columns: 1fr;
-  place-items: center;
+  grid-template-columns: 1fr 2fr 1fr;
+  place-items: start center;
   padding: 50px;
 }
 
-.table {
+#table {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: repeat(3, 1fr);

@@ -9,23 +9,30 @@ const isASet = (cards) => cards.reduce((acc, cur) => acc ^ cur) === 0;
 io.on("connection", async (socket) => {
   console.log("Client connected");
 
-  let game = await Game.findOne({}); // For now, there's just one game
-  socket.emit("initialize", { cards: game.table });
+  const game = await Game.findOne({}); // for now, there's just one global game
+  const name = `Player ${Math.floor(100 * Math.random())}`;
+  await game.addPlayer(name);
+  socket.emit("setName", { name: name });
+  io.emit("initialize", { cards: game.table, players: game.players });
 
   socket.on("guess", async (cards) => {
+    const game = await Game.findOne({});
     if (isASet(cards)) {
-      game.replaceCards(cards);
+      await game.updateGame(name, cards);
       console.log(`Set: ${cards}`);
       console.log(`Table: ${game.table} Remaining: ${game.deck}`);
       if (game.isOver()) {
         game = await Game.createNewGame();
       }
-      io.emit("initialize", { cards: game.table }); // TODO this should be fixed
+      io.emit("initialize", { cards: game.table, players: game.players }); // TODO this should be fixed
     }
   });
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", async () => {
+    const game = await Game.findOne({});
     console.log("Client disconnected");
+    game.removePlayer(name);
+    io.emit("initialize", { cards: game.table, players: game.players });
   });
 });
 

@@ -2,12 +2,17 @@ import React, { useState, useEffect } from "react";
 import socketIOClient from "socket.io-client";
 import "./App.css";
 
-const ENDPOINT = "http://127.0.0.1:4000";
+import Card from "./Card";
+
+// const ENDPOINT = "http://127.0.0.1:4000";
+const ENDPOINT = "http://1b66209e0eba.ngrok.io/";
 
 function App() {
   const [socket, setSocket] = useState();
   const [cards, setCards] = useState([]);
   const [selectedCards, setSelectedCards] = useState([]);
+  const [players, setPlayers] = useState([]);
+  const [name, setName] = useState("");
   const locations = ["one", "two", "three", "four", "five", "six", "seven"];
 
   useEffect(() => {
@@ -16,7 +21,9 @@ function App() {
     socket.on("initialize", (data) => {
       setSelectedCards([]);
       setCards(data.cards);
+      setPlayers(data.players.sort((a, b) => (a.name > b.name ? 1 : -1)));
     });
+    socket.on("setName", (data) => setName(data.name));
     return () => socket.disconnect();
   }, []);
 
@@ -65,7 +72,19 @@ function App() {
 
   return (
     <React.Fragment>
-      <div className="table">
+      <div id="info">
+        <h1>Pro Set</h1>
+        <p>
+          <u>Goal</u>: Find a set of cards with an even number of each dot
+          color.
+        </p>
+        <p>
+          <a href="https://github.com/evantey14/proset">source</a> |{" "}
+          <a href="https://github.com/evantey14">@evantey14</a>
+        </p>
+        <button onClick={solve}>Solve</button>
+      </div>
+      <div id="table">
         {cards.map((card, index) => {
           if (card !== 0) {
             return (
@@ -74,7 +93,7 @@ function App() {
                   card /* This makes React re-animate when card is replaced. */
                 }
                 value={card}
-                location={locations[index]}
+                location={locations[index]} // TODO location -> position bc it's a keyword
                 selected={selectedCards.includes(card)}
                 handleClick={() => handleClick(card)}
               />
@@ -82,36 +101,22 @@ function App() {
           }
         })}
       </div>
-      <button onClick={solve}>Solve</button>
+      <div className="scoreboard">
+        <h1>Scoreboard</h1>
+        {players.map((player, index) => {
+          return (
+            <p
+              key={index}
+              style={{ fontWeight: player.name === name ? "bold" : "" }}
+            >
+              {player.name}{" "}
+              <span style={{ float: "right" }}>{player.score}</span>
+            </p>
+          );
+        })}
+      </div>
     </React.Fragment>
   );
 }
 
-function Card(props) {
-  const hasDots = props.value
-    .toString(2)
-    .padStart(6, "0")
-    .split("")
-    .map((s) => s === "1");
-  const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
-
-  return (
-    <div
-      className={`card ${props.selected ? "selected" : ""}`}
-      style={{ gridArea: props.location }}
-      onClick={props.handleClick}
-    >
-      {" "}
-      {hasDots.map((hasDot, index) => {
-        if (hasDot) {
-          return <Dot key={index} color={colors[index]} />;
-        }
-      })}{" "}
-    </div>
-  );
-}
-
-function Dot(props) {
-  return <div className={`dot ${props.color}`}></div>;
-}
 export default App;
