@@ -25,5 +25,8 @@
   "lint-staged": {
     "*.{js,css,md}": "prettier --write",
     "*.{js}": "eslint --fix"
+  },
+  "scripts": {
+    "start": "cd backend && yarn start"
   }
 }
