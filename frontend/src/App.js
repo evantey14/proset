@@ -8,9 +8,6 @@ import Scoreboard from "./Scoreboard";
 import { positions } from "./constants";
 import { comparePlayers, findSet, togglePresence } from "./helpers";
 
-// const ENDPOINT = "http://127.0.0.1:4000";
-const ENDPOINT = "http://1b66209e0eba.ngrok.io/";
-
 function App() {
   const [socket, setSocket] = useState();
   const [cards, setCards] = useState([]);
@@ -19,7 +16,10 @@ function App() {
   const [name, setName] = useState("");
 
   useEffect(() => {
-    const socket = socketIOClient(ENDPOINT);
+    const socket =
+      window.location.hostname === "localhost"
+        ? socketIOClient("http://127.0.0.1:4000")
+        : socketIOClient();
     setSocket(socket);
     socket.on("refreshGame", (data) => {
       setSelectedCards([]);

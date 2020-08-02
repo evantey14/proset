@@ -95,10 +95,11 @@ function onListening() {
  * Set up database connection
  */
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://db:27017', {
+const DB_URI = process.env.MONGODB_URI || 'mongodb://db:27017';
+mongoose.connect(DB_URI, {
   useNewUrlParser: true,
-  user: "root",
-  pass: "root",
+  user: process.env.DB_USER || "root",
+  pass: process.env.DB_PASSWORD || "root",
 });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));

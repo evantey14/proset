@@ -1,4 +1,5 @@
 {
+  "cacheDirectories": ["backend/node_modules", "frontend/node_modules"],
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "eslint": "^7.5.0",
@@ -27,6 +28,8 @@
     "*.{js}": "eslint --fix"
   },
   "scripts": {
-    "start": "cd backend && yarn start"
+    "start": "node ./backend/bin/www",
+    "install": "yarn --cwd frontend install && yarn --cwd backend install",
+    "heroku-postbuild": "yarn --cwd frontend build"
   }
 }
