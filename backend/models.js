@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const fs = require("fs");
 
 const { Schema } = mongoose;
 
@@ -42,9 +43,16 @@ gameSchema.methods.isOver = function () {
   return this.table.every((c) => c === 0);
 };
 
-gameSchema.methods.addPlayer = function (name) {
+gameSchema.methods.addPlayer = function () {
+  const names = fs
+    .readFileSync("desserts.txt")
+    .toString()
+    .split("\n")
+    .filter((i) => i.length > 0);
+  const name = names[Math.floor(Math.random() * names.length)];
   this.players.push({ name: name, score: 0 });
   this.save();
+  return name;
 };
 
 gameSchema.methods.removePlayer = function (name) {

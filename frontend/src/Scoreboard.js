@@ -2,7 +2,7 @@ import React from "react";
 
 function Scoreboard(props) {
   return (
-    <div className="scoreboard">
+    <div id="scoreboard">
       <h1>Scoreboard</h1>
       {props.players.map((player, index) => {
         return (

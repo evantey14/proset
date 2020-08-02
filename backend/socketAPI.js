@@ -10,8 +10,7 @@ io.on("connection", async (socket) => {
   console.log("Client connected");
 
   const game = await Game.findOne({}); // for now, there's just one global game
-  const name = `Player ${Math.floor(100 * Math.random())}`;
-  await game.addPlayer(name);
+  const name = await game.addPlayer();
   socket.emit("setName", { name: name });
   io.emit("refreshGame", { cards: game.table, players: game.players });
 

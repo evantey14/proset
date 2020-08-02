@@ -5,6 +5,14 @@
   padding: 50px;
 }
 
+#scoreboard {
+  width: 100%;
+}
+
+#scoreboard h1 {
+  text-align: center;
+}
+
 #table {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
