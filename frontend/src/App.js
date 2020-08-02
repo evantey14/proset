@@ -3,6 +3,10 @@ import socketIOClient from "socket.io-client";
 import "./App.css";
 
 import Card from "./Card";
+import Info from "./Info";
+import Scoreboard from "./Scoreboard";
+import { positions } from "./constants";
+import { comparePlayers, findSet, togglePresence } from "./helpers";
 
 // const ENDPOINT = "http://127.0.0.1:4000";
 const ENDPOINT = "http://1b66209e0eba.ngrok.io/";
@@ -13,7 +17,6 @@ function App() {
   const [selectedCards, setSelectedCards] = useState([]);
   const [players, setPlayers] = useState([]);
   const [name, setName] = useState("");
-  const locations = ["one", "two", "three", "four", "five", "six", "seven"];
 
   useEffect(() => {
     const socket = socketIOClient(ENDPOINT);
@@ -21,7 +24,7 @@ function App() {
     socket.on("refreshGame", (data) => {
       setSelectedCards([]);
       setCards(data.cards);
-      setPlayers(data.players.sort((a, b) => (a.name > b.name ? 1 : -1)));
+      setPlayers(data.players.sort(comparePlayers));
     });
     socket.on("setName", (data) => setName(data.name));
     return () => socket.disconnect();
@@ -33,12 +36,7 @@ function App() {
   }, [cards, selectedCards]);
 
   function handleClick(card) {
-    let newSelectedCards;
-    if (selectedCards.includes(card)) {
-      newSelectedCards = selectedCards.filter((c) => c !== card);
-    } else {
-      newSelectedCards = [...selectedCards, card];
-    }
+    let newSelectedCards = togglePresence(selectedCards, card);
     if (newSelectedCards.length > 0) {
       socket.emit("guess", newSelectedCards);
     }
@@ -51,36 +49,15 @@ function App() {
     }
   }
 
-  function solve() {
-    for (let i = 1; i < 127; i++) {
-      const includeCards = i
-        .toString(2)
-        .padStart(7, "0")
-        .split("")
-        .map((s) => s === "1");
-      let guess = cards.filter((c, index) => includeCards[index]);
-      if (!guess.includes(0) && guess.reduce((acc, cur) => acc ^ cur) === 0) {
-        setSelectedCards(guess); // show solution to player
-        setTimeout(() => socket.emit("guess", guess), 3000);
-        break;
-      }
-    }
+  async function solve() {
+    const solution = await findSet(cards);
+    setSelectedCards(solution);
+    setTimeout(() => socket.emit("guess", solution), 1000);
   }
 
   return (
     <React.Fragment>
-      <div id="info">
-        <h1>Pro Set</h1>
-        <p>
-          <u>Goal</u>: Find a set of cards with an even number of each color
-          dot.
-        </p>
-        <p>
-          <a href="https://github.com/evantey14/proset">source</a> |{" "}
-          <a href="https://github.com/evantey14">@evantey14</a>
-        </p>
-        <button onClick={solve}>Solve</button>
-      </div>
+      <Info solve={solve} />
       <div id="table">
         {cards.map((card, index) => {
           if (card !== 0) {
@@ -90,7 +67,7 @@ function App() {
                   card /* This makes React re-animate when card is replaced. */
                 }
                 value={card}
-                location={locations[index]} // TODO location -> position bc it's a keyword
+                position={positions[index]}
                 selected={selectedCards.includes(card)}
                 handleClick={() => handleClick(card)}
               />
@@ -98,20 +75,7 @@ function App() {
           }
         })}
       </div>
-      <div className="scoreboard">
-        <h1>Scoreboard</h1>
-        {players.map((player, index) => {
-          return (
-            <p
-              key={index}
-              style={{ fontWeight: player.name === name ? "bold" : "" }}
-            >
-              {player.name}{" "}
-              <span style={{ float: "right" }}>{player.score}</span>
-            </p>
-          );
-        })}
-      </div>
+      <Scoreboard players={players} name={name} />
     </React.Fragment>
   );
 }

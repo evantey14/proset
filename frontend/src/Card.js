@@ -1,22 +1,19 @@
 import React from "react";
 
-function Card(props) {
-  const hasDots = props.value
-    .toString(2)
-    .padStart(6, "0")
-    .split("")
-    .map((s) => s === "1");
-  const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
+import { colors } from "./constants";
+import { intToBinaryArray } from "./helpers";
 
+function Card(props) {
+  const dotsPresent = intToBinaryArray(props.value, 6);
   return (
     <div
       className={`card ${props.selected ? "selected" : ""}`}
-      style={{ gridArea: props.location }}
+      style={{ gridArea: props.position }}
       onClick={props.handleClick}
     >
       {" "}
-      {hasDots.map((hasDot, index) => {
-        if (hasDot) {
+      {dotsPresent.map((dotPresent, index) => {
+        if (dotPresent) {
           return <Dot key={index} color={colors[index]} />;
         }
       })}{" "}
