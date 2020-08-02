@@ -45,7 +45,7 @@ gameSchema.methods.isOver = function () {
 
 gameSchema.methods.addPlayer = function () {
   const names = fs
-    .readFileSync("desserts.txt")
+    .readFileSync("./desserts.txt")
     .toString()
     .split("\n")
     .filter((i) => i.length > 0);
