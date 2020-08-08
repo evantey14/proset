@@ -14,6 +14,8 @@ function App() {
   const [selectedCards, setSelectedCards] = useState([]);
   const [players, setPlayers] = useState([]);
   const [name, setName] = useState("");
+  const [startTime, setStartTime] = useState(Date.now());
+  const [highScores, setHighScores] = useState([]);
 
   useEffect(() => {
     const socket =
@@ -25,8 +27,14 @@ function App() {
       setSelectedCards([]);
       setCards(data.cards);
       setPlayers(data.players.sort(comparePlayers));
+      if (data.startTime) {
+        setStartTime(Date.parse(data.startTime));
+      }
     });
-    socket.on("setName", (data) => setName(data.name));
+    socket.on("initialize", (data) => {
+      setName(data.name);
+      setHighScores(data.highScores);
+    });
     return () => socket.disconnect();
   }, []);
 
@@ -52,12 +60,12 @@ function App() {
   async function solve() {
     const solution = await findSet(cards);
     setSelectedCards(solution);
-    setTimeout(() => socket.emit("guess", solution), 1000);
+    setTimeout(() => socket.emit("guess", solution), 1);
   }
 
   return (
     <React.Fragment>
-      <Info solve={solve} />
+      <Info solve={solve} startTime={startTime} highScores={highScores} />
       <div id="table">
         {cards.map((card, index) => {
           if (card !== 0) {
