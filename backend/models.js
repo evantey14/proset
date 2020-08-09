@@ -33,8 +33,7 @@ gameSchema.statics.getHighScores = async function () {
   const highScores = games
     .filter((g) => g.duration)
     .map((g) => g.duration)
-    .sort()
-    .reverse();
+    .sort((a, b) => a - b);
   return highScores;
 };
 
@@ -52,16 +51,16 @@ gameSchema.methods.updateGame = function (name, cardsToRemove) {
     }
   }
 
-  this.save();
+  return this.save();
 };
 
 gameSchema.methods.isOver = function () {
   return this.table.every((c) => c === 0);
 };
 
-gameSchema.methods.end = function () {
+gameSchema.methods.end = function (cb) {
   this.duration = Date.now() - this.startTime;
-  this.save();
+  this.save(cb);
 };
 
 gameSchema.methods.addPlayer = function () {

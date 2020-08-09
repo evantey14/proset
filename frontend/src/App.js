@@ -31,6 +31,10 @@ function App() {
         setStartTime(Date.parse(data.startTime));
       }
     });
+    socket.on("refreshHighScores", (data) => {
+      console.log(data);
+      setHighScores(data.highScores);
+    });
     socket.on("initialize", (data) => {
       setName(data.name);
       setHighScores(data.highScores);

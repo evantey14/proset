@@ -23,14 +23,17 @@ io.on("connection", async (socket) => {
   socket.on("guess", async (cards) => {
     let game = await Game.findMostRecent();
     if (isASet(cards)) {
-      await game.updateGame(name, cards);
+      game = await game.updateGame(name, cards);
       console.log(
         `${name} found a set: ${cards} (${game.deck.length} remaining.)`
       );
       if (game.isOver()) {
-        await game.end();
+        await game.end(async () => {
+          io.emit("refreshHighScores", {
+            highScores: await Game.getHighScores(),
+          });
+        });
         game = await Game.createNewGame(game.players);
-        // TODO: update high scores
       }
       io.emit("refreshGame", {
         cards: game.table,

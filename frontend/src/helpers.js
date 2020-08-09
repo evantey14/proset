@@ -20,7 +20,7 @@ const isValidSet = (cards) =>
   !cards.includes(0) && cards.reduce((acc, cur) => acc ^ cur) === 0;
 
 const findSet = function (cards) {
-  for (let i = 1; i < 127; i++) {
+  for (let i = 1; i < 128; i++) {
     const cardsPresent = intToBinaryArray(i, 7);
     const guess = cards.filter((c, index) => cardsPresent[index]);
     if (isValidSet(guess)) {

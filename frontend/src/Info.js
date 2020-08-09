@@ -24,8 +24,8 @@ function Info(props) {
       <p>Game Duration: {Math.floor(duration / 1000)} s</p>
       <p>High Scores:</p>
       <ol>
-        {props.highScores.map((s, i) => (
-          <li key={i}>{Math.floor(s / 1000)} s</li>
+        {props.highScores.map((s) => (
+          <li key={s}>{Math.floor(s / 1000)} s</li>
         ))}
       </ol>
       <button onClick={props.solve}>Solve</button>
