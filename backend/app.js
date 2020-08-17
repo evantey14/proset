@@ -40,8 +40,7 @@ app.use((err, req, res, next) => {
   res.render("error");
 });
 
-// Initialize a single game (this should be changed to allow for game creation / tracking)
-Game.deleteMany({}, (e) => console.log(e));
+// Always create a game on start up
 Game.createNewGame();
 
 module.exports = app;
