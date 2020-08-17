@@ -64,7 +64,7 @@ function App() {
   async function solve() {
     const solution = await findSet(cards);
     setSelectedCards(solution);
-    setTimeout(() => socket.emit("guess", solution), 1);
+    setTimeout(() => socket.emit("guess", solution), 3000);
   }
 
   return (
